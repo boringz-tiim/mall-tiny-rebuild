@@ -31,15 +31,16 @@ public class UmsAdminController {
     public CommonResult<CommonPage<UmsAdminSummary>> list(
             @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "5")
-            @Min(1) @Max(100) long pageSize,
+            @Min(value = 1,message = "pageSize必须大于等于1")
+            @Max(value = 100,message = "pageSize不能大于100") long pageSize,
             @RequestParam(defaultValue = "1")
-            @Min(1) long pageNum
+            @Min(value=1,message = "pageNum必须大于等于1") long pageNum
     ) {
         Page<UmsAdmin> adminPage =
                 adminService.list(keyword, pageSize, pageNum);
 
         Page<UmsAdminSummary> summaryPage =
-                adminPage.convert(UmsAdminSummary::from);
+                (Page<UmsAdminSummary>) adminPage.convert(UmsAdminSummary::from);
 
         return CommonResult.success(CommonPage.from(summaryPage));
     }
