@@ -10,7 +10,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http){
-        http.authorizeHttpRequests(authorize -> authorize.requestMatchers("/hello","/admin/list").permitAll()
+        http.authorizeHttpRequests(authorize -> authorize.requestMatchers("/hello","/admin/list","/admin/{id}").permitAll()
                 .anyRequest().authenticated()
         );
         return http.build();

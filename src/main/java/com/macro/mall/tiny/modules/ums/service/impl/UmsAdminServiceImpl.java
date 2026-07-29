@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
+import com.macro.mall.tiny.common.exception.ApiException;
 import com.macro.mall.tiny.modules.ums.mapper.UmsAdminMapper;
 import com.macro.mall.tiny.modules.ums.model.UmsAdmin;
 import com.macro.mall.tiny.modules.ums.service.UmsAdminService;
@@ -34,5 +35,14 @@ public class UmsAdminServiceImpl
         wrapper.orderByAsc(UmsAdmin::getId);
 
         return page(page, wrapper);
+    }
+
+    @Override
+    public UmsAdmin getDetail(Long id) {
+        UmsAdmin admin = getById(id);
+        if(admin==null){
+            throw new ApiException("用户不存在");
+        }
+        return admin;
     }
 }

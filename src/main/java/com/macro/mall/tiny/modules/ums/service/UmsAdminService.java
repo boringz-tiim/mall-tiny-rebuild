@@ -11,4 +11,5 @@ import java.util.List;
 public interface UmsAdminService extends IService<UmsAdmin> {
    // List<UmsAdmin> listAll();
    Page<UmsAdmin> list(String keyword, long pageSize, long pageNum);
+    UmsAdmin getDetail(Long id);
 }

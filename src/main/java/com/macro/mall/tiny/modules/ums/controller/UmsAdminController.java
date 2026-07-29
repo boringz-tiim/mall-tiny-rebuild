@@ -8,10 +8,7 @@ import com.macro.mall.tiny.modules.ums.model.UmsAdmin;
 import com.macro.mall.tiny.modules.ums.service.UmsAdminService;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -44,4 +41,12 @@ public class UmsAdminController {
 
         return CommonResult.success(CommonPage.from(summaryPage));
     }
+    @GetMapping("/{id}")
+    public CommonResult<UmsAdminSummary>getDetail(@PathVariable
+                                                  @Min(value = 1,message="用户Id必须大于等于1")Long id){
+        UmsAdmin admin = adminService.getDetail(id);
+        UmsAdminSummary summary = UmsAdminSummary.from(admin);
+        return CommonResult.success(summary);
+    }
+
 }
