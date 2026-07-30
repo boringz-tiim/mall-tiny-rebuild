@@ -3,12 +3,15 @@ package com.macro.mall.tiny.modules.ums.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.macro.mall.tiny.common.api.CommonPage;
 import com.macro.mall.tiny.common.api.CommonResult;
+import com.macro.mall.tiny.modules.ums.dto.UmsAdminCreateRequest;
 import com.macro.mall.tiny.modules.ums.dto.UmsAdminSummary;
 import com.macro.mall.tiny.modules.ums.model.UmsAdmin;
 import com.macro.mall.tiny.modules.ums.service.UmsAdminService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 
@@ -47,6 +50,12 @@ public class UmsAdminController {
         UmsAdmin admin = adminService.getDetail(id);
         UmsAdminSummary summary = UmsAdminSummary.from(admin);
         return CommonResult.success(summary);
+    }
+    @PostMapping
+    public CommonResult<UmsAdminSummary> create(@Valid @RequestBody UmsAdminCreateRequest request){
+
+        UmsAdmin admin = adminService.create(request);
+        return CommonResult.success(UmsAdminSummary.from(admin),"用户创建成功");
     }
 
 }
