@@ -83,6 +83,8 @@
 
 - [x] 创建详细学习笔记 `docs/mall-tiny.md`。
 - [x] 补充 Git、GitHub 和全局异常处理学习笔记 `docs/mall-tiny-2.md`。
+- [x] 补充用户注册与 MyBatis-Plus 学习笔记 `docs/mall-tiny-rebuild-3.md`。
+- [x] 补充 Base64、JWT 与认证过滤器学习笔记 `docs/mall-tiny-4.md`。
 - [x] 建立 GitHub 仓库。
 - [x] 提交用户分页功能。
 - [x] 提交全局异常处理。
