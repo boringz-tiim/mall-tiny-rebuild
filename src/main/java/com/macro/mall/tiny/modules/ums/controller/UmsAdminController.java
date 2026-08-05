@@ -3,13 +3,14 @@ package com.macro.mall.tiny.modules.ums.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.macro.mall.tiny.common.api.CommonPage;
 import com.macro.mall.tiny.common.api.CommonResult;
-import com.macro.mall.tiny.modules.ums.dto.UmsAdminCreateRequest;
-import com.macro.mall.tiny.modules.ums.dto.UmsAdminSummary;
+import com.macro.mall.tiny.modules.ums.dto.*;
 import com.macro.mall.tiny.modules.ums.model.UmsAdmin;
 import com.macro.mall.tiny.modules.ums.service.UmsAdminService;
+import com.macro.mall.tiny.security.JwtAdminPrincipal;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -56,6 +57,29 @@ public class UmsAdminController {
 
         UmsAdmin admin = adminService.create(request);
         return CommonResult.success(UmsAdminSummary.from(admin),"用户创建成功");
+    }
+    /**
+     * 登录接口
+     */
+    @PostMapping("/login")
+    public CommonResult<UmsAdminLoginResponse> loginResponseCommonResult(
+            @Valid @RequestBody
+            UmsAdminLoginRequest request
+    ){
+        String token=adminService.login(request);
+        UmsAdminLoginResponse response = new UmsAdminLoginResponse(
+                token,"Bearer"
+        );
+        return CommonResult.success(response,"登录成功");
+    }
+
+    @GetMapping("/me")
+    public CommonResult<UmsAdminCurrentResponse>me(@AuthenticationPrincipal JwtAdminPrincipal principal){
+        UmsAdminCurrentResponse response = new UmsAdminCurrentResponse(
+                principal.adminId(),
+                principal.username()
+        );
+        return CommonResult.success(response);
     }
 
 }

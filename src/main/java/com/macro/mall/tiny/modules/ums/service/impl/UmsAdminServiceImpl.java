@@ -1,14 +1,17 @@
 package com.macro.mall.tiny.modules.ums.service.impl;
 
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.macro.mall.tiny.common.exception.ApiException;
 import com.macro.mall.tiny.modules.ums.dto.UmsAdminCreateRequest;
+import com.macro.mall.tiny.modules.ums.dto.UmsAdminLoginRequest;
 import com.macro.mall.tiny.modules.ums.mapper.UmsAdminMapper;
 import com.macro.mall.tiny.modules.ums.model.UmsAdmin;
 import com.macro.mall.tiny.modules.ums.service.UmsAdminService;
+import com.macro.mall.tiny.security.JwtTokenService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -23,10 +26,11 @@ public class UmsAdminServiceImpl
         implements UmsAdminService {
     //在类中添加成员变量和构造器
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenService jwtTokenService;
 
-
-    public UmsAdminServiceImpl(PasswordEncoder passwordEncoder) {
+    public UmsAdminServiceImpl(PasswordEncoder passwordEncoder, JwtTokenService jwtTokenService) {
         this.passwordEncoder = passwordEncoder;
+        this.jwtTokenService=jwtTokenService;
 
     }
 
@@ -86,5 +90,44 @@ public class UmsAdminServiceImpl
             throw new ApiException("创建用户失败");
         }
         return admin;
+    }
+
+    /**
+     * 根据用户名查询后台用户
+     * @param username
+     * @return
+     */
+    @Override
+    public UmsAdmin getByUsername(String username) {
+        return getOne(
+                Wrappers.<UmsAdmin>lambdaQuery()
+                        .eq(
+                                UmsAdmin::getUsername,
+                                username
+                        )
+        );
+    }
+
+    @Override
+    public UmsAdmin authenticate(UmsAdminLoginRequest request) {
+        UmsAdmin admin = getByUsername(request.username());
+        if(admin==null || admin.getPassword()==null||!passwordEncoder.matches(request.password(),admin.getPassword())){
+            throw new ApiException("用户名或密码错误");
+        }
+        if(!Integer.valueOf(1).equals(admin.getStatus())){
+            throw new ApiException("账号已被禁用");
+        }
+        return admin;
+    }
+
+    /**
+     * 实现登录方法
+     * @param request
+     * @return
+     */
+    @Override
+    public String login(UmsAdminLoginRequest request) {
+        UmsAdmin admin = authenticate(request);
+        return jwtTokenService.generateToken(admin);
     }
 }

@@ -1,6 +1,6 @@
 # mall-tiny-rebuild 项目状态
 
-最后更新：2026-07-30
+最后更新：2026-08-05
 
 ## 项目目标
 
@@ -30,7 +30,7 @@
 | ORM | MyBatis-Plus 3.5.17 |
 | 安全框架 | Spring Security 7 |
 | 接口文档 | 计划使用 Springdoc OpenAPI |
-| JWT | 计划使用新版 JJWT |
+| JWT | JJWT 0.13.0 |
 
 ## 已完成
 
@@ -91,19 +91,18 @@
 
 ## 当前阶段
 
-新增后台用户功能已经完成。按当前学习需求，下一阶段优先开发登录与 JWT，
-之后再继续完善后台用户模块的其他 CRUD。
+后台用户新增、登录、JWT 生成解析和基本请求认证已经完成。
+下一阶段先完善 Spring Security 的统一异常响应，再补充 JWT 自动化测试，
+之后继续后台用户模块的其他 CRUD。
 
 推荐顺序：
 
-1. 创建登录请求 DTO。
-2. 根据用户名查询后台用户。
-3. 使用 BCrypt 验证密码，并检查用户启用状态。
-4. 集成新版 JJWT。
-5. 生成、解析和验证 Token。
-6. 实现登录接口。
-7. 配置 JWT 请求过滤器。
-8. 实现退出和当前用户信息接口。
+1. 禁用默认表单登录和 Basic 登录。
+2. 统一处理未登录响应，固定返回 HTTP 401 和 `CommonResult`。
+3. 统一处理无权限响应，固定返回 HTTP 403 和 `CommonResult`。
+4. 为登录、Token 解析和受保护接口补充自动化测试。
+5. 实现退出接口，并说明无状态 JWT 的退出语义。
+6. 继续后台用户修改、状态、密码和删除功能。
 
 ## 后续路线
 
@@ -145,18 +144,20 @@
 
 ### 5. 登录与 JWT
 
-- [ ] 登录请求 DTO
-- [ ] 根据用户名加载用户
-- [ ] BCrypt 密码校验
-- [ ] 使用新版 JJWT 生成 Token
-- [ ] 解析和验证 Token
-- [ ] JWT 请求过滤器
-- [ ] 登录、退出和当前用户信息接口
+- [x] 登录请求 DTO
+- [x] 根据用户名加载用户
+- [x] BCrypt 密码校验
+- [x] 使用 JJWT 0.13.0 生成 Token
+- [x] 解析和验证 Token
+- [x] JWT 请求过滤器
+- [x] 登录接口
+- [x] 当前用户信息接口
+- [ ] 退出接口
 
 ### 6. Spring Security 动态授权
 
-- [ ] 定义公开接口白名单
-- [ ] 无状态 Session 配置
+- [x] 定义开发期公开接口白名单
+- [x] 无状态 Session 配置
 - [ ] 禁用表单登录和默认 Basic 登录
 - [ ] 统一处理未登录响应
 - [ ] 统一处理无权限响应
@@ -266,6 +267,20 @@ GET http://localhost:8080/admin/1
 ```text
 POST http://localhost:8080/admin
 Content-Type: application/json
+```
+
+用户登录：
+
+```text
+POST http://localhost:8080/admin/login
+Content-Type: application/json
+```
+
+当前登录用户：
+
+```text
+GET http://localhost:8080/admin/me
+Authorization: Bearer <token>
 ```
 
 参数校验：

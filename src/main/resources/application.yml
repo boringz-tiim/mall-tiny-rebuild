@@ -13,3 +13,6 @@ mybatis-plus:
       id-type: auto
   configuration:
     map-underscore-to-camel-case: true
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION:2h}
