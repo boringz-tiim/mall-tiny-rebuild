@@ -152,4 +152,19 @@ public class UmsAdminServiceImpl
         admin.setNote(request.note());
         return admin;
     }
+
+    @Override
+    public UmsAdmin updateStatus(Long id, Integer status) {
+        UmsAdmin admin = getDetail(id);
+        boolean updated=update(
+                Wrappers.<UmsAdmin>lambdaUpdate()
+                        .eq(UmsAdmin::getId,id)
+                        .set(UmsAdmin::getStatus,status)
+        );
+        if(!updated){
+            throw new ApiException("修改用户状态失败");
+        }
+        admin.setStatus(status);
+        return admin;
+    }
 }

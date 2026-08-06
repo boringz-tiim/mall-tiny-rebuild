@@ -94,8 +94,8 @@
 ## 当前阶段
 
 后台用户新增、登录、JWT 生成解析、基本请求认证、统一安全异常响应和
-基础退出接口和后台用户基本信息修改已经完成。自动化测试按当前学习安排
-暂时延期，当前继续后台用户状态、密码和删除功能。
+基础退出接口、后台用户基本信息和状态修改已经完成。自动化测试按当前
+学习安排暂时延期，当前继续后台用户密码和删除功能。
 
 推荐顺序：
 
@@ -115,7 +115,7 @@
 - [x] BCrypt 密码加密
 - [x] 用户名唯一性校验
 - [x] 修改用户基本信息
-- [ ] 修改用户状态
+- [x] 修改用户状态
 - [ ] 修改密码
 - [ ] 删除用户
 - [ ] 用户接口测试
@@ -209,6 +209,8 @@ package com.macro.mall.tiny;
 - `application.properties` 可能为空；确认无用途后可以删除。
 - 当前 `SecurityConfig` 仍为开发期临时配置，不能视为最终安全方案。
 - 当前尚未建立完整自动化测试，完成用户 CRUD 后优先补充。
+- 当前修改用户状态会阻止后续登录，但已签发的无状态 JWT 不会立即失效；
+  后续结合 Redis、Token 版本或黑名单机制完善立即失效能力。
 
 ## 本地启动
 
@@ -289,6 +291,14 @@ Authorization: Bearer <token>
 
 ```text
 PUT http://localhost:8080/admin/{id}
+Authorization: Bearer <token>
+Content-Type: application/json
+```
+
+修改用户状态：
+
+```text
+PATCH http://localhost:8080/admin/{id}/status
 Authorization: Bearer <token>
 Content-Type: application/json
 ```

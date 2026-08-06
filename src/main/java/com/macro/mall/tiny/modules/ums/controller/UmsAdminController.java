@@ -104,4 +104,24 @@ public class UmsAdminController {
         return CommonResult.success(UmsAdminSummary.from(admin),"用户基本信息修改成功");
     }
 
+
+    @PatchMapping("/{id}/status")
+    public CommonResult<UmsAdminSummary> updateStatus(
+            @PathVariable
+            @Min(value = 1, message = "用户Id必须大于等于1")
+            Long id,
+
+            @Valid @RequestBody
+            UmsAdminStatusRequest request
+    ) {
+        UmsAdmin admin = adminService.updateStatus(
+                id,
+                request.status()
+        );
+
+        return CommonResult.success(
+                UmsAdminSummary.from(admin),
+                "用户状态修改成功"
+        );
+    }
 }

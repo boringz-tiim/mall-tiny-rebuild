@@ -35,4 +35,11 @@ public interface UmsAdminService extends IService<UmsAdmin> {
      * 不负责修改用户名、密码和账号状态
      */
     UmsAdmin updateBasicInfo(Long id, UmsAdminUpdateRequest request);
+ /**
+  * 修改后台用户状态
+  * @param id 用户ID
+  * @param status 0 表示禁用，1表示启用
+  * @return 修改后的用户
+  */
+   UmsAdmin updateStatus(Long id,Integer status);
 }
