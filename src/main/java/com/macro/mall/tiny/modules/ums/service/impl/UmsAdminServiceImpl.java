@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.macro.mall.tiny.common.exception.ApiException;
 import com.macro.mall.tiny.modules.ums.dto.UmsAdminCreateRequest;
 import com.macro.mall.tiny.modules.ums.dto.UmsAdminLoginRequest;
+import com.macro.mall.tiny.modules.ums.dto.UmsAdminUpdateRequest;
 import com.macro.mall.tiny.modules.ums.mapper.UmsAdminMapper;
 import com.macro.mall.tiny.modules.ums.model.UmsAdmin;
 import com.macro.mall.tiny.modules.ums.service.UmsAdminService;
@@ -129,5 +130,26 @@ public class UmsAdminServiceImpl
     public String login(UmsAdminLoginRequest request) {
         UmsAdmin admin = authenticate(request);
         return jwtTokenService.generateToken(admin);
+    }
+
+    @Override
+    public UmsAdmin updateBasicInfo(Long id, UmsAdminUpdateRequest request) {
+        UmsAdmin admin = getDetail(id);
+        boolean updated= update(
+                Wrappers.<UmsAdmin>lambdaUpdate()
+                        .eq(UmsAdmin::getId,id)
+                        .set(UmsAdmin::getIcon,request.icon())
+                        .set(UmsAdmin::getEmail,request.email())
+                        .set(UmsAdmin::getNickName,request.nickName())
+                        .set(UmsAdmin::getNote,request.note())
+        );
+        if(!updated){
+            throw new ApiException("修改用户基本信息失败");
+        }
+        admin.setIcon(request.icon());
+        admin.setEmail(request.email());
+        admin.setNickName(request.nickName());
+        admin.setNote(request.note());
+        return admin;
     }
 }

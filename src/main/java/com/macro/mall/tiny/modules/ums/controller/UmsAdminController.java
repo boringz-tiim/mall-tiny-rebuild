@@ -92,4 +92,16 @@ public class UmsAdminController {
         return CommonResult.success(null,"退出成功");
     }
 
+    @PutMapping("/{id}")
+    public CommonResult<UmsAdminSummary> updateBasicInfo(
+            @PathVariable
+            @Min(value = 1,message = "用户id必须大于等于1")
+            Long id,
+            @Valid @RequestBody
+            UmsAdminUpdateRequest request
+    ){
+        UmsAdmin admin = adminService.updateBasicInfo(id,request);
+        return CommonResult.success(UmsAdminSummary.from(admin),"用户基本信息修改成功");
+    }
+
 }

@@ -94,8 +94,8 @@
 ## 当前阶段
 
 后台用户新增、登录、JWT 生成解析、基本请求认证、统一安全异常响应和
-基础退出接口已经完成。自动化测试按当前学习安排暂时延期，下一阶段继续
-后台用户模块的其他 CRUD。
+基础退出接口和后台用户基本信息修改已经完成。自动化测试按当前学习安排
+暂时延期，当前继续后台用户状态、密码和删除功能。
 
 推荐顺序：
 
@@ -114,7 +114,7 @@
 - [x] 新增用户
 - [x] BCrypt 密码加密
 - [x] 用户名唯一性校验
-- [ ] 修改用户基本信息
+- [x] 修改用户基本信息
 - [ ] 修改用户状态
 - [ ] 修改密码
 - [ ] 删除用户
@@ -283,6 +283,14 @@ Content-Type: application/json
 ```text
 GET http://localhost:8080/admin/me
 Authorization: Bearer <token>
+```
+
+修改用户基本信息：
+
+```text
+PUT http://localhost:8080/admin/{id}
+Authorization: Bearer <token>
+Content-Type: application/json
 ```
 
 参数校验：
