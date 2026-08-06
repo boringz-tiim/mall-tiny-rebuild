@@ -81,5 +81,15 @@ public class UmsAdminController {
         );
         return CommonResult.success(response);
     }
+    /**
+     * 当前使用无状态 JWT，服务端不保存登录 Session，
+     * 因此这里只通知客户端退出成功。
+     * 客户端收到响应后应删除本地 Token。
+     *
+     */
+    @PostMapping("/logout")
+    public CommonResult<Void> logout(){
+        return CommonResult.success(null,"退出成功");
+    }
 
 }

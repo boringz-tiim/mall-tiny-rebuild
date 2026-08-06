@@ -25,11 +25,12 @@ public class SecurityConfig {
     ) {
         http
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/admin","/admin/login")
+                        .ignoringRequestMatchers("/admin","/admin/login","/admin/logout")
                 )
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(form->form.disable())
                 .httpBasic(basic->basic.disable())
+                .logout(logout -> logout.disable())
                 .exceptionHandling(exceptions->exceptions.authenticationEntryPoint(authenticationEntryPoint).accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/hello")
@@ -44,6 +45,10 @@ public class SecurityConfig {
                                 "/admin/{id}"
                         )
                         .permitAll()
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/admin/logout"
+                        ).authenticated()
                         .requestMatchers(
                                 HttpMethod.POST,
                                 "/admin",
