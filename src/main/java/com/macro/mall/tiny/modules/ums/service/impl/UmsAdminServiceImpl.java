@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.macro.mall.tiny.common.exception.ApiException;
 import com.macro.mall.tiny.modules.ums.dto.UmsAdminCreateRequest;
 import com.macro.mall.tiny.modules.ums.dto.UmsAdminLoginRequest;
+import com.macro.mall.tiny.modules.ums.dto.UmsAdminPasswordRequest;
 import com.macro.mall.tiny.modules.ums.dto.UmsAdminUpdateRequest;
 import com.macro.mall.tiny.modules.ums.mapper.UmsAdminMapper;
 import com.macro.mall.tiny.modules.ums.model.UmsAdmin;
@@ -166,5 +167,25 @@ public class UmsAdminServiceImpl
         }
         admin.setStatus(status);
         return admin;
+    }
+
+    @Override
+    public void changePassword(Long adminId, UmsAdminPasswordRequest request) {
+        UmsAdmin admin = getDetail(adminId);
+        if(!passwordEncoder.matches(request.oldPassword(),admin.getPassword())){
+            throw new ApiException("原密码错误");
+
+        }
+        if(request.oldPassword().equals(request.newPassword())){
+            throw new ApiException("新密码不能与原密码相同");
+        }
+        String encodedPassword=passwordEncoder.encode(request.newPassword());
+        boolean updated=update(Wrappers.<UmsAdmin>lambdaUpdate().
+                eq(UmsAdmin::getId,adminId)
+                        .set(UmsAdmin::getPassword,encodedPassword)
+                );
+        if(!updated){
+            throw new ApiException("修改密码失败");
+        }
     }
 }

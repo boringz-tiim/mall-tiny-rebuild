@@ -124,4 +124,9 @@ public class UmsAdminController {
                 "用户状态修改成功"
         );
     }
+    @PatchMapping("/me/password")
+    public CommonResult<Void> changePassword(@AuthenticationPrincipal  JwtAdminPrincipal principal, @Valid @RequestBody UmsAdminPasswordRequest request ){
+        adminService.changePassword(principal.adminId(),request);
+        return CommonResult.success(null,"密码修改成功");
+    }
 }

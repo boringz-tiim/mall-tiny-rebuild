@@ -26,7 +26,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/admin","/admin/login",
-                                "/admin/logout","/admin/{id}","/admin/{id}/status")
+                                "/admin/logout","/admin/{id}","/admin/{id}/status","/admin/me/password")
                 )
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(form->form.disable())
@@ -46,7 +46,8 @@ public class SecurityConfig {
                         ).authenticated()
                         .requestMatchers(
                                 HttpMethod.PATCH,
-                                "/admin/{id}/status"
+                                "/admin/{id}/status",
+                                "/admin/me/password"
                         )
                         .authenticated()
                         .requestMatchers(

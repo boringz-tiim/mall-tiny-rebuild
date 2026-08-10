@@ -1,6 +1,6 @@
 # mall-tiny-rebuild 项目状态
 
-最后更新：2026-08-06
+最后更新：2026-08-10
 
 ## 项目目标
 
@@ -94,8 +94,8 @@
 ## 当前阶段
 
 后台用户新增、登录、JWT 生成解析、基本请求认证、统一安全异常响应和
-基础退出接口、后台用户基本信息和状态修改已经完成。自动化测试按当前
-学习安排暂时延期，当前继续后台用户密码和删除功能。
+基础退出接口以及后台用户基本信息、状态和密码修改已经完成。自动化测试
+按当前学习安排暂时延期，当前继续后台用户删除功能。
 
 推荐顺序：
 
@@ -116,7 +116,7 @@
 - [x] 用户名唯一性校验
 - [x] 修改用户基本信息
 - [x] 修改用户状态
-- [ ] 修改密码
+- [x] 修改密码
 - [ ] 删除用户
 - [ ] 用户接口测试
 
@@ -211,6 +211,8 @@ package com.macro.mall.tiny;
 - 当前尚未建立完整自动化测试，完成用户 CRUD 后优先补充。
 - 当前修改用户状态会阻止后续登录，但已签发的无状态 JWT 不会立即失效；
   后续结合 Redis、Token 版本或黑名单机制完善立即失效能力。
+- 当前用户修改密码后，修改前已签发的 JWT 仍可使用至过期；后续与 Token
+  版本或 Redis 失效机制一起完善。
 
 ## 本地启动
 
@@ -299,6 +301,14 @@ Content-Type: application/json
 
 ```text
 PATCH http://localhost:8080/admin/{id}/status
+Authorization: Bearer <token>
+Content-Type: application/json
+```
+
+当前用户修改密码：
+
+```text
+PATCH http://localhost:8080/admin/me/password
 Authorization: Bearer <token>
 Content-Type: application/json
 ```
