@@ -11,7 +11,6 @@ import com.macro.mall.tiny.modules.ums.model.UmsAdmin;
 
 
 
-
 public interface UmsAdminService extends IService<UmsAdmin> {
    // List<UmsAdmin> listAll();
    Page<UmsAdmin> list(String keyword, long pageSize, long pageNum);
@@ -48,4 +47,11 @@ public interface UmsAdminService extends IService<UmsAdmin> {
  *
  */
     void changePassword(Long adminId, UmsAdminPasswordRequest request);
+
+    /**
+     * 删除后台用户及其角色关系
+     * @param id
+     * @param currentAdminId 当前登录用户ID,传入当前用户ID是为了阻止用户删除自己
+     */
+    void deleteAdmin( Long id,Long currentAdminId);
 }

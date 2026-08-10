@@ -94,8 +94,8 @@
 ## 当前阶段
 
 后台用户新增、登录、JWT 生成解析、基本请求认证、统一安全异常响应和
-基础退出接口以及后台用户基本信息、状态和密码修改已经完成。自动化测试
-按当前学习安排暂时延期，当前继续后台用户删除功能。
+基础退出接口以及后台用户新增、查询、基本信息、状态、密码和删除功能已经
+完成。自动化测试按当前学习安排暂时延期，下一阶段进入角色模块。
 
 推荐顺序：
 
@@ -117,7 +117,7 @@
 - [x] 修改用户基本信息
 - [x] 修改用户状态
 - [x] 修改密码
-- [ ] 删除用户
+- [x] 删除用户（物理删除并事务清理用户角色关系）
 - [ ] 用户接口测试
 
 ### 2. 角色模块
@@ -213,6 +213,8 @@ package com.macro.mall.tiny;
   后续结合 Redis、Token 版本或黑名单机制完善立即失效能力。
 - 当前用户修改密码后，修改前已签发的 JWT 仍可使用至过期；后续与 Token
   版本或 Redis 失效机制一起完善。
+- 当前用户删除采用物理删除，并在同一事务中清理 `ums_admin_role_relation`；
+  登录日志作为审计数据保留。被删除用户已签发的 JWT 仍可使用至过期。
 
 ## 本地启动
 
@@ -311,6 +313,13 @@ Content-Type: application/json
 PATCH http://localhost:8080/admin/me/password
 Authorization: Bearer <token>
 Content-Type: application/json
+```
+
+删除用户：
+
+```text
+DELETE http://localhost:8080/admin/{id}
+Authorization: Bearer <token>
 ```
 
 参数校验：

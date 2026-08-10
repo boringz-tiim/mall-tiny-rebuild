@@ -16,6 +16,7 @@ import com.macro.mall.tiny.modules.ums.service.UmsAdminService;
 import com.macro.mall.tiny.security.JwtTokenService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 
@@ -186,6 +187,21 @@ public class UmsAdminServiceImpl
                 );
         if(!updated){
             throw new ApiException("修改密码失败");
+        }
+    }
+
+    @Override
+    @Transactional
+
+    public void deleteAdmin(Long id, Long currentAdminId) {
+        if(id.equals(currentAdminId)){
+            throw new ApiException("不能删除当前登录用户");
+        }
+        getDetail(id);
+        baseMapper.deleteRoleRelationsByAdminId(id);
+        boolean removed=removeById(id);
+        if(!removed){
+            throw new ApiException("删除用户失败");
         }
     }
 }

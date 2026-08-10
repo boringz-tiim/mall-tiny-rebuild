@@ -129,4 +129,9 @@ public class UmsAdminController {
         adminService.changePassword(principal.adminId(),request);
         return CommonResult.success(null,"密码修改成功");
     }
+    @DeleteMapping("/{id}")
+    public CommonResult<Void> deleteAdmin(@PathVariable @Min(value = 1,message = "用户ID必须大于等于1")Long id, @AuthenticationPrincipal JwtAdminPrincipal principal){
+        adminService.deleteAdmin(id,principal.adminId());
+        return CommonResult.success(null,"用户删除成功");
+    }
 }

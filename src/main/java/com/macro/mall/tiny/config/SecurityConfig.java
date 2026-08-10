@@ -45,6 +45,10 @@ public class SecurityConfig {
                                 "/admin/{id}"
                         ).authenticated()
                         .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/admin/{id}"
+                        ).authenticated()
+                        .requestMatchers(
                                 HttpMethod.PATCH,
                                 "/admin/{id}/status",
                                 "/admin/me/password"
