@@ -96,7 +96,7 @@
 后台用户新增、登录、JWT 生成解析、基本请求认证、统一安全异常响应和
 基础退出接口以及后台用户新增、查询、基本信息、状态、密码和删除功能已经
 完成。自动化测试按当前学习安排暂时延期，当前正在实现角色模块，角色
-基础分层与分页查询已经完成。
+基础分层、分页查询和新增角色已经完成。
 
 推荐顺序：
 
@@ -125,6 +125,7 @@
 
 - [x] `UmsRole` 实体、Mapper、Service、Controller
 - [x] 角色分页查询
+- [x] 新增角色
 - [ ] 角色 CRUD
 - [ ] `UmsAdminRoleRelation`
 - [ ] 给用户分配角色
@@ -217,6 +218,8 @@ package com.macro.mall.tiny;
   版本或 Redis 失效机制一起完善。
 - 当前用户删除采用物理删除，并在同一事务中清理 `ums_admin_role_relation`；
   登录日志作为审计数据保留。被删除用户已签发的 JWT 仍可使用至过期。
+- 当前角色名称仅在应用层检查重复，数据库没有唯一索引，并发创建时仍可能
+  产生重名角色；后续数据库迁移时应增加唯一约束。
 
 ## 本地启动
 
@@ -329,6 +332,14 @@ Authorization: Bearer <token>
 ```text
 GET http://localhost:8080/role/list?pageNum=1&pageSize=5
 Authorization: Bearer <token>
+```
+
+新增角色：
+
+```text
+POST http://localhost:8080/role
+Authorization: Bearer <token>
+Content-Type: application/json
 ```
 
 参数校验：
