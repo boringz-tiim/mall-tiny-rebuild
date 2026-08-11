@@ -4,6 +4,7 @@ import com.macro.mall.tiny.common.api.CommonPage;
 import com.macro.mall.tiny.common.api.CommonResult;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.macro.mall.tiny.modules.ums.dto.UmsRoleCreateRequest;
+import com.macro.mall.tiny.modules.ums.dto.UmsRoleUpdateRequest;
 import com.macro.mall.tiny.modules.ums.model.UmsRole;
 import com.macro.mall.tiny.modules.ums.service.UmsRoleService;
 import jakarta.validation.Valid;
@@ -52,5 +53,30 @@ public class UmsRoleController {
                 "新角色创建成功"
         );
    }
+   @GetMapping("/{id}")
+    public CommonResult<UmsRole>getDetail(
+            @PathVariable
+            @Min(value = 1,message = "角色id必须大于等于1")
+            Long id
+   ){
+        return CommonResult.success(
+                roleService.getDetail(id)
+        );
+   }
+    @PutMapping("/{id}")
+    public CommonResult<UmsRole> update(
+            @PathVariable
+            @Min(value = 1, message = "角色Id必须大于等于1")
+            Long id,
 
+            @Valid @RequestBody
+            UmsRoleUpdateRequest request
+    ) {
+        UmsRole role = roleService.update(id, request);
+
+        return CommonResult.success(
+                role,
+                "角色修改成功"
+        );
+    }
 }

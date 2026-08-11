@@ -96,7 +96,7 @@
 后台用户新增、登录、JWT 生成解析、基本请求认证、统一安全异常响应和
 基础退出接口以及后台用户新增、查询、基本信息、状态、密码和删除功能已经
 完成。自动化测试按当前学习安排暂时延期，当前正在实现角色模块，角色
-基础分层、分页查询和新增角色已经完成。
+基础分层、分页查询、新增、详情和修改角色已经完成。
 
 推荐顺序：
 
@@ -126,6 +126,7 @@
 - [x] `UmsRole` 实体、Mapper、Service、Controller
 - [x] 角色分页查询
 - [x] 新增角色
+- [x] 角色详情与修改
 - [ ] 角色 CRUD
 - [ ] `UmsAdminRoleRelation`
 - [ ] 给用户分配角色
@@ -338,6 +339,21 @@ Authorization: Bearer <token>
 
 ```text
 POST http://localhost:8080/role
+Authorization: Bearer <token>
+Content-Type: application/json
+```
+
+角色详情：
+
+```text
+GET http://localhost:8080/role/{id}
+Authorization: Bearer <token>
+```
+
+修改角色：
+
+```text
+PUT http://localhost:8080/role/{id}
 Authorization: Bearer <token>
 Content-Type: application/json
 ```
