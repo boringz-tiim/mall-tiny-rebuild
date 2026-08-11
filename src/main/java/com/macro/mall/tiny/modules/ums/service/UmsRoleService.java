@@ -25,10 +25,4 @@ Page<UmsRole> list(String keyword,long pageSize,long pageNum);
      */
     UmsRole getDetail(Long id);
     UmsRole update(Long id, UmsRoleUpdateRequest request);
-
-    /** 修改角色状态，0 表示禁用，1 表示启用。 */
-    UmsRole updateStatus(Long id, Integer status);
-
-    /** 物理删除角色，并清理该角色的用户、菜单和资源关系。 */
-    void deleteRole(Long id);
 }

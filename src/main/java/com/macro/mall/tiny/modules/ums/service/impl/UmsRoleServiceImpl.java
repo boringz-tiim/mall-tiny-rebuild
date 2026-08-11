@@ -11,7 +11,6 @@ import com.macro.mall.tiny.modules.ums.model.UmsRole;
 import com.macro.mall.tiny.modules.ums.service.UmsRoleService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
@@ -107,33 +106,6 @@ public class UmsRoleServiceImpl extends ServiceImpl<UmsRoleMapper, UmsRole>
         role.setSort(request.sort());
 
         return role;
-    }
-
-    @Override
-    public UmsRole updateStatus(Long id, Integer status) {
-        UmsRole role = getDetail(id);
-        boolean updated = update(
-                Wrappers.<UmsRole>lambdaUpdate()
-                        .eq(UmsRole::getId, id)
-                        .set(UmsRole::getStatus, status)
-        );
-        if (!updated) {
-            throw new ApiException("修改角色状态失败");
-        }
-        role.setStatus(status);
-        return role;
-    }
-
-    @Override
-    @Transactional
-    public void deleteRole(Long id) {
-        getDetail(id);
-        baseMapper.deleteAdminRelationsByRoleId(id);
-        baseMapper.deleteMenuRelationsByRoleId(id);
-        baseMapper.deleteResourceRelationsByRoleId(id);
-        if (!removeById(id)) {
-            throw new ApiException("删除角色失败");
-        }
     }
 
 
