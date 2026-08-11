@@ -1,6 +1,6 @@
 # mall-tiny-rebuild 项目状态
 
-最后更新：2026-08-10
+最后更新：2026-08-11
 
 ## 项目目标
 
@@ -95,7 +95,8 @@
 
 后台用户新增、登录、JWT 生成解析、基本请求认证、统一安全异常响应和
 基础退出接口以及后台用户新增、查询、基本信息、状态、密码和删除功能已经
-完成。自动化测试按当前学习安排暂时延期，下一阶段进入角色模块。
+完成。自动化测试按当前学习安排暂时延期，当前正在实现角色模块，角色
+基础分层与分页查询已经完成。
 
 推荐顺序：
 
@@ -122,8 +123,9 @@
 
 ### 2. 角色模块
 
-- [ ] `UmsRole` 实体、Mapper、Service、Controller
-- [ ] 角色分页与 CRUD
+- [x] `UmsRole` 实体、Mapper、Service、Controller
+- [x] 角色分页查询
+- [ ] 角色 CRUD
 - [ ] `UmsAdminRoleRelation`
 - [ ] 给用户分配角色
 - [ ] 查询用户角色
@@ -319,6 +321,13 @@ Content-Type: application/json
 
 ```text
 DELETE http://localhost:8080/admin/{id}
+Authorization: Bearer <token>
+```
+
+角色分页：
+
+```text
+GET http://localhost:8080/role/list?pageNum=1&pageSize=5
 Authorization: Bearer <token>
 ```
 

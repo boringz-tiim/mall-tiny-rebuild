@@ -38,7 +38,8 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers(
                                 HttpMethod.GET,
-                                "/admin/me"
+                                "/admin/me",
+                                "/role/list"
                         ).authenticated()
                         .requestMatchers(
                                 HttpMethod.PUT,
