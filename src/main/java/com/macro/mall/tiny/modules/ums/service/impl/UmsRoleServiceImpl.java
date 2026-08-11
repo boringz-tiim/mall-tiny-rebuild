@@ -11,10 +11,15 @@ import com.macro.mall.tiny.modules.ums.model.UmsRole;
 import com.macro.mall.tiny.modules.ums.service.UmsRoleService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 
+/**
+ * 后台角色业务实现类
+ * 负责角色数据校验，状态修改，以及删除角色时的关联关系清理
+ */
 @Service
 public class UmsRoleServiceImpl extends ServiceImpl<UmsRoleMapper, UmsRole>
         implements UmsRoleService {
@@ -107,6 +112,36 @@ public class UmsRoleServiceImpl extends ServiceImpl<UmsRoleMapper, UmsRole>
 
         return role;
     }
+
+    @Override
+    public UmsRole updateStatus(Long id, Integer status) {
+        UmsRole role = getDetail(id);
+        boolean updated=update(
+                Wrappers.<UmsRole>lambdaUpdate()
+                        .eq(UmsRole::getId,id)
+                        .set(UmsRole::getStatus,status)
+        );
+        if(!updated){
+            throw new ApiException("修改角色状态失败");
+        }
+        role.setStatus(status);
+        return role;
+    }
+
+    @Override
+    @Transactional
+
+    public void deleteRole(Long id) {
+        getDetail(id);
+        baseMapper.deleteAdminRelationsByRoleId(id);
+        baseMapper.deleteMenuRelationsByRoleId(id);
+        baseMapper.deleteResourceRelationsByRoleId(id);
+        boolean removed = removeById(id);
+        if (!removed) {
+            throw new ApiException("删除角色失败");
+        }
+    }
+
 
 
 }

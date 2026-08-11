@@ -20,7 +20,11 @@
 ## 协作方式
 
 - 用户通过本项目学习 Java 后端开发。
+- 项目代码由用户亲手编写。除非用户明确要求代为修改，否则 Codex 不直接修改业务代码。
+- Codex 应按照实际开发顺序，依次给出每一步需要创建或修改的文件、代码位置和代码内容；一次可以指导完成一个完整的小功能，但不能跳过关键步骤。
 - 每一步都应说明：目的、原理、代码职责、关键语法、验证方法和常见错误。
+- 每段代码都应解释它在当前调用链中的作用，以及它与 Controller、Service、ServiceImpl、Mapper、DTO 和数据库之间的关系。
+- 遇到常见 Java 后端面试知识点时，应单独标明并重点解释，包括概念、原理、常见追问、易错点和结合本项目的回答方式。
 - 按小功能推进，不要一次性生成整个项目。
 - 开始新功能前先读取 `docs/PROJECT_STATUS.md`、相关源码和最近的 Git 提交。
 - 不要重做 `docs/PROJECT_STATUS.md` 中已经完成的功能。
@@ -44,6 +48,7 @@ modules/ums
 
 - Controller 只负责参数接收、调用 Service 和组织响应。
 - Service 负责业务逻辑，Mapper 负责数据库访问。
+- 新建或修改 Controller、Service 接口和 ServiceImpl 实现类时，应在类或接口声明上方编写清晰的 JavaDoc，说明其职责；重要的公开方法也应补充 JavaDoc，说明参数、返回值和业务作用。
 - 使用构造器注入，不使用字段注入。
 - 对外响应使用 `CommonResult<T>`。
 - 分页响应使用 `CommonPage<T>`。
@@ -97,7 +102,8 @@ mvn test
 
 ## Git 约定
 
-- 每完成一个独立功能就创建一次提交。
+- 一个完整功能模块完成并验证通过后，由 Codex 负责创建本地 Git 提交并推送到远程仓库；功能尚未完成时不提前提交半成品。
+- 提交和推送前必须先获得或确认用户对该功能的完成认可，并确保只包含本功能及约定的文档变更。
 - 提交前执行 `git status`、`git diff` 和 `git diff --cached`。
 - 常用提交前缀：
   - `feat:` 新功能
@@ -114,4 +120,3 @@ mvn test
 - `docs/PROJECT_STATUS.md`：当前进度、后续路线和已知问题。
 - `docs/mall-tiny.md`：详细学习笔记。
 - GitHub：<https://github.com/boringz-tiim/mall-tiny-rebuild>
-
