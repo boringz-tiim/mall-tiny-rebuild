@@ -4,6 +4,7 @@ import com.macro.mall.tiny.common.api.CommonPage;
 import com.macro.mall.tiny.common.api.CommonResult;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.macro.mall.tiny.modules.ums.dto.UmsRoleCreateRequest;
+import com.macro.mall.tiny.modules.ums.dto.UmsRoleStatusRequest;
 import com.macro.mall.tiny.modules.ums.dto.UmsRoleUpdateRequest;
 import com.macro.mall.tiny.modules.ums.model.UmsRole;
 import com.macro.mall.tiny.modules.ums.service.UmsRoleService;
@@ -78,5 +79,28 @@ public class UmsRoleController {
                 role,
                 "角色修改成功"
         );
+    }
+
+    @PatchMapping("/{id}/status")
+    public CommonResult<UmsRole> updateStatus(
+            @PathVariable
+            @Min(value = 1, message = "角色Id必须大于等于1")
+            Long id,
+            @Valid @RequestBody UmsRoleStatusRequest request
+    ) {
+        return CommonResult.success(
+                roleService.updateStatus(id, request.status()),
+                "角色状态修改成功"
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    public CommonResult<Void> deleteRole(
+            @PathVariable
+            @Min(value = 1, message = "角色Id必须大于等于1")
+            Long id
+    ) {
+        roleService.deleteRole(id);
+        return CommonResult.success(null, "角色删除成功");
     }
 }
