@@ -8,7 +8,9 @@ import com.macro.mall.tiny.modules.ums.dto.UmsAdminLoginRequest;
 import com.macro.mall.tiny.modules.ums.dto.UmsAdminPasswordRequest;
 import com.macro.mall.tiny.modules.ums.dto.UmsAdminUpdateRequest;
 import com.macro.mall.tiny.modules.ums.model.UmsAdmin;
+import com.macro.mall.tiny.modules.ums.model.UmsRole;
 
+import java.util.List;
 
 
 public interface UmsAdminService extends IService<UmsAdmin> {
@@ -54,4 +56,21 @@ public interface UmsAdminService extends IService<UmsAdmin> {
      * @param currentAdminId 当前登录用户ID,传入当前用户ID是为了阻止用户删除自己
      */
     void deleteAdmin( Long id,Long currentAdminId);
+    /**
+     * 查询指定用户拥有的角色。
+     *
+     * @param adminId 用户ID
+     * @return 用户拥有的角色列表
+     */
+    List<UmsRole> getRoleList(Long adminId);
+
+    /**
+     * 重新分配指定用户的角色。
+     *
+     * @param adminId 用户ID
+     * @param roleIds 新的角色ID列表，空列表表示清空全部角色
+     * @return 分配完成后的角色列表
+     */
+    List<UmsRole> updateRoles(Long adminId, List<Long> roleIds);
+
 }

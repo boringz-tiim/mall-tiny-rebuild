@@ -25,7 +25,7 @@ public class SecurityConfig {
     ) {
         http
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/admin","/admin/login",
+                        .ignoringRequestMatchers("/admin","/admin/login","/admin/{id}/roles",
                                 "/admin/logout","/admin/{id}","/admin/{id}/status","/admin/me/password","/role","/role/{id}","/role/{id}/status")
                 )
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -40,12 +40,14 @@ public class SecurityConfig {
                                 HttpMethod.GET,
                                 "/admin/me",
                                 "/role/list",
-                                "/role/{id}"
+                                "/role/{id}",
+                                "/admin/{id}/roles"
                         ).authenticated()
                         .requestMatchers(
                                 HttpMethod.PUT,
                                 "/admin/{id}",
-                                "/role/{id}"
+                                "/role/{id}",
+                                "/admin/{id}/roles"
                         ).authenticated()
                         .requestMatchers(
                                 HttpMethod.DELETE,

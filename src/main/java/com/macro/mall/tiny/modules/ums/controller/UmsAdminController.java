@@ -5,6 +5,7 @@ import com.macro.mall.tiny.common.api.CommonPage;
 import com.macro.mall.tiny.common.api.CommonResult;
 import com.macro.mall.tiny.modules.ums.dto.*;
 import com.macro.mall.tiny.modules.ums.model.UmsAdmin;
+import com.macro.mall.tiny.modules.ums.model.UmsRole;
 import com.macro.mall.tiny.modules.ums.service.UmsAdminService;
 import com.macro.mall.tiny.security.JwtAdminPrincipal;
 import jakarta.validation.Valid;
@@ -133,5 +134,40 @@ public class UmsAdminController {
     public CommonResult<Void> deleteAdmin(@PathVariable @Min(value = 1,message = "用户ID必须大于等于1")Long id, @AuthenticationPrincipal JwtAdminPrincipal principal){
         adminService.deleteAdmin(id,principal.adminId());
         return CommonResult.success(null,"用户删除成功");
+    }
+    /**
+     * 查询指定用户拥有的角色。
+     */
+    @GetMapping("/{id}/roles")
+    public CommonResult<List<UmsRole>> getRoleList(
+            @PathVariable
+            @Min(value = 1, message = "用户ID必须大于等于1")
+            Long id
+    ) {
+        return CommonResult.success(
+                adminService.getRoleList(id)
+        );
+    }
+    /**
+     * 重新分配指定用户的角色。
+     */
+    @PutMapping("/{id}/roles")
+    public CommonResult<List<UmsRole>> updateRoles(
+            @PathVariable
+            @Min(value = 1, message = "用户ID必须大于等于1")
+            Long id,
+
+            @Valid @RequestBody
+            UmsAdminRoleRequest request
+    ) {
+        List<UmsRole> roles = adminService.updateRoles(
+                id,
+                request.roleIds()
+        );
+
+        return CommonResult.success(
+                roles,
+                "用户角色分配成功"
+        );
     }
 }

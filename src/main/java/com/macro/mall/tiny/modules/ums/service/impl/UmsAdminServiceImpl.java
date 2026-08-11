@@ -11,7 +11,11 @@ import com.macro.mall.tiny.modules.ums.dto.UmsAdminLoginRequest;
 import com.macro.mall.tiny.modules.ums.dto.UmsAdminPasswordRequest;
 import com.macro.mall.tiny.modules.ums.dto.UmsAdminUpdateRequest;
 import com.macro.mall.tiny.modules.ums.mapper.UmsAdminMapper;
+import com.macro.mall.tiny.modules.ums.mapper.UmsAdminRoleRelationMapper;
+import com.macro.mall.tiny.modules.ums.mapper.UmsRoleMapper;
 import com.macro.mall.tiny.modules.ums.model.UmsAdmin;
+import com.macro.mall.tiny.modules.ums.model.UmsAdminRoleRelation;
+import com.macro.mall.tiny.modules.ums.model.UmsRole;
 import com.macro.mall.tiny.modules.ums.service.UmsAdminService;
 import com.macro.mall.tiny.security.JwtTokenService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +26,7 @@ import org.springframework.util.StringUtils;
 
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class UmsAdminServiceImpl
@@ -30,11 +35,18 @@ public class UmsAdminServiceImpl
     //在类中添加成员变量和构造器
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenService jwtTokenService;
-
-    public UmsAdminServiceImpl(PasswordEncoder passwordEncoder, JwtTokenService jwtTokenService) {
+    private final UmsAdminRoleRelationMapper adminRoleRelationMapper;
+    private final UmsRoleMapper roleMapper;
+    public UmsAdminServiceImpl(
+            PasswordEncoder passwordEncoder,
+            JwtTokenService jwtTokenService,
+            UmsAdminRoleRelationMapper adminRoleRelationMapper,
+            UmsRoleMapper roleMapper
+    ) {
         this.passwordEncoder = passwordEncoder;
-        this.jwtTokenService=jwtTokenService;
-
+        this.jwtTokenService = jwtTokenService;
+        this.adminRoleRelationMapper = adminRoleRelationMapper;
+        this.roleMapper = roleMapper;
     }
 
     @Override
@@ -203,5 +215,52 @@ public class UmsAdminServiceImpl
         if(!removed){
             throw new ApiException("删除用户失败");
         }
+    }
+
+    @Override
+    public List<UmsRole> getRoleList(Long adminId) {
+        getDetail(adminId);
+
+        return adminRoleRelationMapper.selectRoleListByAdminId(adminId);
+    }
+
+    @Override
+    @Transactional
+    public List<UmsRole> updateRoles(Long adminId, List<Long> roleIds) {
+        getDetail(adminId);
+        List<Long> distinctRoleIds = roleIds.stream()
+                .distinct()
+                .toList();
+        if(!distinctRoleIds .isEmpty() ){
+            List<UmsRole> existingRoles=
+                    roleMapper.selectByIds(distinctRoleIds );
+            if(existingRoles .size()!=distinctRoleIds.size()){
+                throw new ApiException("部分角色不存在");
+            }
+        }
+        adminRoleRelationMapper.delete(
+                Wrappers.<UmsAdminRoleRelation>lambdaQuery()
+                        .eq(
+                                UmsAdminRoleRelation::getAdminId,
+                                adminId
+                        )
+        );
+
+        for (Long roleId : distinctRoleIds) {
+            UmsAdminRoleRelation relation =
+                    new UmsAdminRoleRelation();
+
+            relation.setAdminId(adminId);
+            relation.setRoleId(roleId);
+
+            int inserted = adminRoleRelationMapper.insert(relation);
+
+            if (inserted != 1) {
+                throw new ApiException("分配用户角色失败");
+            }
+        }
+
+        return adminRoleRelationMapper
+                .selectRoleListByAdminId(adminId);
     }
 }
