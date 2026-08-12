@@ -25,7 +25,7 @@ public class SecurityConfig {
     ) {
         http
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/admin","/admin/login","/admin/{id}/roles",
+                        .ignoringRequestMatchers("/admin","/admin/login","/admin/{id}/roles","/menu","/menu/{id}",
                                 "/admin/logout","/admin/{id}","/admin/{id}/status","/admin/me/password","/role","/role/{id}","/role/{id}/status")
                 )
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -41,22 +41,28 @@ public class SecurityConfig {
                                 "/admin/me",
                                 "/role/list",
                                 "/role/{id}",
-                                "/admin/{id}/roles"
+                                "/admin/{id}/roles",
+                                "/menu/list/{parentId}",
+                                "/menu/{id}",
+                                "/menu/tree"
                         ).authenticated()
                         .requestMatchers(
                                 HttpMethod.PUT,
                                 "/admin/{id}",
                                 "/role/{id}",
-                                "/admin/{id}/roles"
+                                "/admin/{id}/roles",
+                                "/menu/{id}"
                         ).authenticated()
                         .requestMatchers(
                                 HttpMethod.DELETE,
                                 "/admin/{id}",
-                                "/role/{id}"
+                                "/role/{id}",
+                                "/menu/{id}"
                         ).authenticated()
                         .requestMatchers(
                                 HttpMethod.POST,
-                                "/role"
+                                "/role",
+                                "/menu"
                         )
                         .authenticated()
                         .requestMatchers(

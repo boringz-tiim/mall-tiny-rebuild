@@ -98,6 +98,7 @@
 完成。自动化测试按当前学习安排暂时延期，当前正在实现角色模块，角色
 基础分层、分页查询、新增、详情、修改、状态修改和删除已经完成；用户角色
 关系实体、查询用户角色和重新分配用户角色也已经完成。
+当前已进入菜单模块，菜单基础分层、按父级查询、CRUD 和菜单树已经完成。
 
 推荐顺序：
 
@@ -135,9 +136,9 @@
 
 ### 3. 菜单模块
 
-- [ ] `UmsMenu` 实体、Mapper、Service、Controller
-- [ ] 菜单 CRUD
-- [ ] 构造菜单树
+- [x] `UmsMenu` 实体、Mapper、Service、Controller
+- [x] 菜单 CRUD（有子菜单时禁止删除，并事务清理角色菜单关系）
+- [x] 构造菜单树
 - [ ] `UmsRoleMenuRelation`
 - [ ] 给角色分配菜单
 
@@ -227,6 +228,8 @@ package com.macro.mall.tiny;
   `ums_role_resource_relation` 中对应角色的关联记录。
 - 当前用户角色分配以 `ums_admin_role_relation` 为真实数据来源，尚未同步维护
   `ums_role.admin_count` 冗余计数字段；后续统一决定动态统计或写入时同步。
+- 当前修改菜单父级时会校验祖先链以防止形成环，并更新当前菜单的 `level`；
+  已有后代菜单的 `level` 尚未递归同步，但菜单树仍以 `parent_id` 为准构造。
 
 ## 本地启动
 
@@ -391,6 +394,50 @@ Content-Type: application/json
 
 ```text
 DELETE http://localhost:8080/role/{id}
+Authorization: Bearer <token>
+```
+
+按父级查询菜单：
+
+```text
+GET http://localhost:8080/menu/list/{parentId}
+Authorization: Bearer <token>
+```
+
+菜单详情：
+
+```text
+GET http://localhost:8080/menu/{id}
+Authorization: Bearer <token>
+```
+
+新增菜单：
+
+```text
+POST http://localhost:8080/menu
+Authorization: Bearer <token>
+Content-Type: application/json
+```
+
+修改菜单：
+
+```text
+PUT http://localhost:8080/menu/{id}
+Authorization: Bearer <token>
+Content-Type: application/json
+```
+
+删除菜单：
+
+```text
+DELETE http://localhost:8080/menu/{id}
+Authorization: Bearer <token>
+```
+
+完整菜单树：
+
+```text
+GET http://localhost:8080/menu/tree
 Authorization: Bearer <token>
 ```
 
