@@ -1,6 +1,6 @@
 # mall-tiny-rebuild 项目状态
 
-最后更新：2026-08-11
+最后更新：2026-08-13
 
 ## 项目目标
 
@@ -100,6 +100,8 @@
 关系实体、查询用户角色和重新分配用户角色也已经完成。
 当前已进入菜单模块，菜单基础分层、按父级查询、CRUD 和菜单树已经完成。
 角色菜单关系、查询角色菜单和重新分配角色菜单也已经完成。
+当前已进入接口资源模块，`UmsResourceCategory` CRUD 已经完成，删除分类时会
+检查关联资源并禁止删除非空分类。下一步实现 `UmsResource` CRUD 和分页。
 
 推荐顺序：
 
@@ -145,7 +147,7 @@
 
 ### 4. 接口资源模块
 
-- [ ] `UmsResourceCategory` CRUD
+- [x] `UmsResourceCategory` CRUD（删除非空分类时进行关联资源检查）
 - [ ] `UmsResource` CRUD 和分页
 - [ ] `UmsRoleResourceRelation`
 - [ ] 给角色分配接口资源
@@ -457,6 +459,43 @@ Authorization: Bearer <token>
 Content-Type: application/json
 ```
 
+资源分类列表：
+
+```text
+GET http://localhost:8080/resource-category/list
+Authorization: Bearer <token>
+```
+
+资源分类详情：
+
+```text
+GET http://localhost:8080/resource-category/{id}
+Authorization: Bearer <token>
+```
+
+新增资源分类：
+
+```text
+POST http://localhost:8080/resource-category
+Authorization: Bearer <token>
+Content-Type: application/json
+```
+
+修改资源分类：
+
+```text
+PUT http://localhost:8080/resource-category/{id}
+Authorization: Bearer <token>
+Content-Type: application/json
+```
+
+删除资源分类：
+
+```text
+DELETE http://localhost:8080/resource-category/{id}
+Authorization: Bearer <token>
+```
+
 参数校验：
 
 ```text
@@ -464,6 +503,11 @@ GET http://localhost:8080/admin/list?pageNum=0&pageSize=5
 ```
 
 ## 新对话交接提示
+
+当前对话已完成用户、角色、菜单、资源分类及用户角色、角色菜单关系功能。
+开启新对话继续开发时，应从接口资源模块的 `UmsResource` CRUD 和分页开始。工作区中
+`UmsMenuService.java` 可能仅有未提交的文件末尾空行变化，处理前先检查差异，
+不要把它误认为未完成的业务代码。
 
 在新的 Codex 对话中使用：
 
@@ -483,7 +527,9 @@ D:\mall-tiny-rebuild\mall-tiny-rebuild
 请先检查当前源码和 git status，不要重做已经完成的功能。
 按照 AGENTS.md 的协作方式，每一步解释目的、原理、代码职责和验证方法。
 
-本次从 docs/PROJECT_STATUS.md 的“当前阶段”继续。
+本次从 docs/PROJECT_STATUS.md 的“当前阶段”继续，下一步实现
+UmsResource CRUD 和分页。项目业务代码由我亲手编写，请按步骤指导，
+不要直接修改业务代码；项目状态文档、Git 提交和远程推送由你负责。
 ```
 
 ## GitHub
