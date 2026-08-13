@@ -6,8 +6,12 @@ import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.macro.mall.tiny.common.exception.ApiException;
 import com.macro.mall.tiny.modules.ums.dto.UmsRoleCreateRequest;
 import com.macro.mall.tiny.modules.ums.dto.UmsRoleUpdateRequest;
+import com.macro.mall.tiny.modules.ums.mapper.UmsMenuMapper;
 import com.macro.mall.tiny.modules.ums.mapper.UmsRoleMapper;
+import com.macro.mall.tiny.modules.ums.mapper.UmsRoleMenuRelationMapper;
+import com.macro.mall.tiny.modules.ums.model.UmsMenu;
 import com.macro.mall.tiny.modules.ums.model.UmsRole;
+import com.macro.mall.tiny.modules.ums.model.UmsRoleMenuRelation;
 import com.macro.mall.tiny.modules.ums.service.UmsRoleService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Service;
@@ -15,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 后台角色业务实现类
@@ -23,6 +28,15 @@ import java.time.LocalDateTime;
 @Service
 public class UmsRoleServiceImpl extends ServiceImpl<UmsRoleMapper, UmsRole>
         implements UmsRoleService {
+    private final UmsRoleMenuRelationMapper roleMenuRelationMapper;
+    private final UmsMenuMapper menuMapper;
+    public UmsRoleServiceImpl(
+            UmsRoleMenuRelationMapper roleMenuRelationMapper,
+            UmsMenuMapper menuMapper
+    ) {
+        this.roleMenuRelationMapper = roleMenuRelationMapper;
+        this.menuMapper = menuMapper;
+    }
     @Override
     public Page<UmsRole> list(String keyword, long pageSize, long pageNum) {
 
@@ -142,6 +156,66 @@ public class UmsRoleServiceImpl extends ServiceImpl<UmsRoleMapper, UmsRole>
         }
     }
 
+    /**
+     * 查询角色菜单
+     * @param roleId 角色ID
+     * @return
+     */
+    @Override
+    public List<UmsMenu> getMenuList(Long roleId) {
+        getDetail(roleId);
+
+        return roleMenuRelationMapper
+                .selectMenuListByRoleId(roleId);
+    }
+
+    @Override
+    @Transactional
+    public List<UmsMenu> updateMenus(
+            Long roleId,
+            List<Long> menuIds
+    ) {
+        getDetail(roleId);
+
+        List<Long> distinctMenuIds = menuIds.stream()
+                .distinct()
+                .toList();
+
+        if (!distinctMenuIds.isEmpty()) {
+            List<UmsMenu> existingMenus =
+                    menuMapper.selectByIds(distinctMenuIds);
+
+            if (existingMenus.size() != distinctMenuIds.size()) {
+                throw new ApiException("部分菜单不存在");
+            }
+        }
+
+        roleMenuRelationMapper.delete(
+                Wrappers.<UmsRoleMenuRelation>lambdaQuery()
+                        .eq(
+                                UmsRoleMenuRelation::getRoleId,
+                                roleId
+                        )
+        );
+
+        for (Long menuId : distinctMenuIds) {
+            UmsRoleMenuRelation relation =
+                    new UmsRoleMenuRelation();
+
+            relation.setRoleId(roleId);
+            relation.setMenuId(menuId);
+
+            int inserted =
+                    roleMenuRelationMapper.insert(relation);
+
+            if (inserted != 1) {
+                throw new ApiException("分配角色菜单失败");
+            }
+        }
+
+        return roleMenuRelationMapper
+                .selectMenuListByRoleId(roleId);
+    }
 
 
 }

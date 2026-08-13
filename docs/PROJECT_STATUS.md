@@ -99,6 +99,7 @@
 基础分层、分页查询、新增、详情、修改、状态修改和删除已经完成；用户角色
 关系实体、查询用户角色和重新分配用户角色也已经完成。
 当前已进入菜单模块，菜单基础分层、按父级查询、CRUD 和菜单树已经完成。
+角色菜单关系、查询角色菜单和重新分配角色菜单也已经完成。
 
 推荐顺序：
 
@@ -139,8 +140,8 @@
 - [x] `UmsMenu` 实体、Mapper、Service、Controller
 - [x] 菜单 CRUD（有子菜单时禁止删除，并事务清理角色菜单关系）
 - [x] 构造菜单树
-- [ ] `UmsRoleMenuRelation`
-- [ ] 给角色分配菜单
+- [x] `UmsRoleMenuRelation`
+- [x] 给角色分配菜单（事务执行旧关系删除与新关系写入）
 
 ### 4. 接口资源模块
 
@@ -439,6 +440,21 @@ Authorization: Bearer <token>
 ```text
 GET http://localhost:8080/menu/tree
 Authorization: Bearer <token>
+```
+
+查询角色菜单：
+
+```text
+GET http://localhost:8080/role/{id}/menus
+Authorization: Bearer <token>
+```
+
+重新分配角色菜单：
+
+```text
+PUT http://localhost:8080/role/{id}/menus
+Authorization: Bearer <token>
+Content-Type: application/json
 ```
 
 参数校验：

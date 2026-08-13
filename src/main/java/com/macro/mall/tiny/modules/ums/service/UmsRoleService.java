@@ -3,8 +3,11 @@ package com.macro.mall.tiny.modules.ums.service;
 import com.baomidou.mybatisplus.spring.service.IService;
 import com.macro.mall.tiny.modules.ums.dto.UmsRoleCreateRequest;
 import com.macro.mall.tiny.modules.ums.dto.UmsRoleUpdateRequest;
+import com.macro.mall.tiny.modules.ums.model.UmsMenu;
 import com.macro.mall.tiny.modules.ums.model.UmsRole;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+
+import java.util.List;
 
 /**
  * 后台角色业务接口
@@ -35,4 +38,18 @@ Page<UmsRole> list(String keyword,long pageSize,long pageNum);
     UmsRole updateStatus( Long id,  Integer status);
 
     void deleteRole(Long id);
+    /**
+     * 查询指定角色拥有的菜单。
+     *
+     * @param roleId 角色ID
+     * @return 角色拥有的菜单列表
+     */
+    List<UmsMenu> getMenuList(Long roleId);
+    /**
+     * 重新分配指定角色的菜单
+     * @param roleId 角色Id
+     * @param menuIds 新的菜单ID列表，空列表表示清空全部菜单
+     * @return 分配完成后的菜单列表
+     */
+    List<UmsMenu> updateMenus(Long roleId,List<Long>menuIds);
 }

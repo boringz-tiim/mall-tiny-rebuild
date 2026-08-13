@@ -4,8 +4,10 @@ import com.macro.mall.tiny.common.api.CommonPage;
 import com.macro.mall.tiny.common.api.CommonResult;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.macro.mall.tiny.modules.ums.dto.UmsRoleCreateRequest;
+import com.macro.mall.tiny.modules.ums.dto.UmsRoleMenuRequest;
 import com.macro.mall.tiny.modules.ums.dto.UmsRoleStatusRequest;
 import com.macro.mall.tiny.modules.ums.dto.UmsRoleUpdateRequest;
+import com.macro.mall.tiny.modules.ums.model.UmsMenu;
 import com.macro.mall.tiny.modules.ums.model.UmsRole;
 import com.macro.mall.tiny.modules.ums.service.UmsRoleService;
 import jakarta.validation.Valid;
@@ -14,6 +16,8 @@ import jakarta.validation.constraints.Min;
 
 
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 后台角色管理接口
@@ -101,5 +105,40 @@ public class UmsRoleController {
     ){
         roleService.deleteRole(id);
         return CommonResult.success(null,"角色删除成功");
+    }
+    /**
+     * 查询指定角色拥有的菜单。
+     */
+    @GetMapping("/{id}/menus")
+    public CommonResult<List<UmsMenu>> getMenuList(
+            @PathVariable
+            @Min(value = 1, message = "角色ID必须大于等于1")
+            Long id
+    ) {
+        return CommonResult.success(
+                roleService.getMenuList(id)
+        );
+    }
+    /**
+     * 重新分配指定角色的菜单。
+     */
+    @PutMapping("/{id}/menus")
+    public CommonResult<List<UmsMenu>> updateMenus(
+            @PathVariable
+            @Min(value = 1, message = "角色ID必须大于等于1")
+            Long id,
+
+            @Valid @RequestBody
+            UmsRoleMenuRequest request
+    ) {
+        List<UmsMenu> menus = roleService.updateMenus(
+                id,
+                request.menuIds()
+        );
+
+        return CommonResult.success(
+                menus,
+                "角色菜单分配成功"
+        );
     }
 }
