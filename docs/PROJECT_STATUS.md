@@ -100,9 +100,9 @@
 关系实体、查询用户角色和重新分配用户角色也已经完成。
 当前已进入菜单模块，菜单基础分层、按父级查询、CRUD 和菜单树已经完成。
 角色菜单关系、查询角色菜单和重新分配角色菜单也已经完成。
-当前已进入接口资源模块，资源分类、接口资源 CRUD 和分页已经完成；
-`UmsRoleResourceRelation`、查询角色资源和重新分配角色资源也已经完成。
-下一步根据用户查询接口权限，为后续动态授权和 Redis 缓存准备数据来源。
+接口资源模块已经完成：资源分类、接口资源 CRUD 和分页、角色资源分配以及
+根据用户查询接口权限均已实现。用户权限查询只使用启用角色，并对多个角色
+拥有的重复资源去重。下一步进入 Spring Security 动态 URL 授权。
 
 推荐顺序：
 
@@ -152,7 +152,7 @@
 - [x] `UmsResource` CRUD 和分页（支持分类、名称和 URL 条件筛选）
 - [x] `UmsRoleResourceRelation`
 - [x] 给角色分配接口资源（事务替换旧关系并校验资源存在）
-- [ ] 根据用户查询接口权限
+- [x] 根据用户查询接口权限（只使用启用角色并去重资源）
 
 ### 5. 登录与 JWT
 
@@ -549,6 +549,13 @@ Authorization: Bearer <token>
 Content-Type: application/json
 ```
 
+查询用户接口权限：
+
+```text
+GET http://localhost:8080/admin/{id}/resources
+Authorization: Bearer <token>
+```
+
 参数校验：
 
 ```text
@@ -557,8 +564,8 @@ GET http://localhost:8080/admin/list?pageNum=0&pageSize=5
 
 ## 新对话交接提示
 
-当前对话已完成用户、角色、菜单、资源分类、接口资源及用户角色、角色菜单、
-角色资源关系功能。开启新对话继续开发时，应从“根据用户查询接口权限”开始。工作区中
+当前对话已完成用户、角色、菜单、资源分类、接口资源及全部 RBAC 关系查询和
+分配功能。开启新对话继续开发时，应从 Spring Security 动态 URL 授权开始。工作区中
 `UmsMenuService.java` 可能仅有未提交的文件末尾空行变化，处理前先检查差异，
 不要把它误认为未完成的业务代码。
 
@@ -581,7 +588,7 @@ D:\mall-tiny-rebuild\mall-tiny-rebuild
 按照 AGENTS.md 的协作方式，每一步解释目的、原理、代码职责和验证方法。
 
 本次从 docs/PROJECT_STATUS.md 的“当前阶段”继续，下一步实现
-根据用户查询接口权限。项目业务代码由我亲手编写，请按步骤指导，
+Spring Security 动态 URL 授权。项目业务代码由我亲手编写，请按步骤指导，
 不要直接修改业务代码；项目状态文档、Git 提交和远程推送由你负责。
 ```
 

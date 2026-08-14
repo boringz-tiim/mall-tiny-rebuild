@@ -5,6 +5,7 @@ import com.macro.mall.tiny.common.api.CommonPage;
 import com.macro.mall.tiny.common.api.CommonResult;
 import com.macro.mall.tiny.modules.ums.dto.*;
 import com.macro.mall.tiny.modules.ums.model.UmsAdmin;
+import com.macro.mall.tiny.modules.ums.model.UmsResource;
 import com.macro.mall.tiny.modules.ums.model.UmsRole;
 import com.macro.mall.tiny.modules.ums.service.UmsAdminService;
 import com.macro.mall.tiny.security.JwtAdminPrincipal;
@@ -168,6 +169,24 @@ public class UmsAdminController {
         return CommonResult.success(
                 roles,
                 "用户角色分配成功"
+        );
+    }
+    /**
+     * 查询指定用户拥有的接口资源。
+     *
+     * 资源通过用户的启用角色获得，重复资源会被去除。
+     *
+     * @param id 用户ID
+     * @return 用户拥有的接口资源列表
+     */
+    @GetMapping("/{id}/resources")
+    public CommonResult<List<UmsResource>> getResourceList(
+            @PathVariable
+            @Min(value = 1, message = "用户ID必须大于等于1")
+            Long id
+    ) {
+        return CommonResult.success(
+                adminService.getResourceList(id)
         );
     }
 }

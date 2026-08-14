@@ -2,6 +2,7 @@ package com.macro.mall.tiny.modules.ums.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.macro.mall.tiny.modules.ums.model.UmsAdminRoleRelation;
+import com.macro.mall.tiny.modules.ums.model.UmsResource;
 import com.macro.mall.tiny.modules.ums.model.UmsRole;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -31,6 +32,30 @@ public interface UmsAdminRoleRelationMapper
             ORDER BY r.sort ASC, r.id ASC
             """)
     List<UmsRole> selectRoleListByAdminId(
+            @Param("adminId") Long adminId
+    );
+    /**
+     * 查询指定后台用户通过启用角色获得的接口资源。
+     *
+     * 多个角色拥有同一资源时，通过 DISTINCT 去除重复记录。
+     *
+     * @param adminId 后台用户ID
+     * @return 用户拥有的接口资源列表
+     */
+    @Select("""
+        select distinct resource.*
+        from ums_resource resource
+        inner join ums_role_resource_relation role_resource
+            on role_resource.resource_id = resource.id
+        inner join ums_role role
+            on role.id = role_resource.role_id
+        inner join ums_admin_role_relation admin_role
+            on admin_role.role_id = role.id
+        where admin_role.admin_id = #{adminId}
+          and role.status = 1
+        order by resource.category_id asc, resource.id asc
+        """)
+    List<UmsResource> selectResourceListByAdminId(
             @Param("adminId") Long adminId
     );
 }

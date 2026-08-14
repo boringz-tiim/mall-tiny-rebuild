@@ -8,6 +8,7 @@ import com.macro.mall.tiny.modules.ums.dto.UmsAdminLoginRequest;
 import com.macro.mall.tiny.modules.ums.dto.UmsAdminPasswordRequest;
 import com.macro.mall.tiny.modules.ums.dto.UmsAdminUpdateRequest;
 import com.macro.mall.tiny.modules.ums.model.UmsAdmin;
+import com.macro.mall.tiny.modules.ums.model.UmsResource;
 import com.macro.mall.tiny.modules.ums.model.UmsRole;
 
 import java.util.List;
@@ -72,5 +73,12 @@ public interface UmsAdminService extends IService<UmsAdmin> {
      * @return 分配完成后的角色列表
      */
     List<UmsRole> updateRoles(Long adminId, List<Long> roleIds);
+    /**
+     * 查询指定用户通过启用角色获得的接口资源。
+     *
+     * @param adminId 用户ID
+     * @return 用户拥有的去重接口资源列表
+     */
+    List<UmsResource> getResourceList(Long adminId);
 
 }

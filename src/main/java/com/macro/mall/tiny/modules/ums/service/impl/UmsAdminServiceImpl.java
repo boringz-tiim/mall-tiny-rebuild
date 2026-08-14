@@ -15,6 +15,7 @@ import com.macro.mall.tiny.modules.ums.mapper.UmsAdminRoleRelationMapper;
 import com.macro.mall.tiny.modules.ums.mapper.UmsRoleMapper;
 import com.macro.mall.tiny.modules.ums.model.UmsAdmin;
 import com.macro.mall.tiny.modules.ums.model.UmsAdminRoleRelation;
+import com.macro.mall.tiny.modules.ums.model.UmsResource;
 import com.macro.mall.tiny.modules.ums.model.UmsRole;
 import com.macro.mall.tiny.modules.ums.service.UmsAdminService;
 import com.macro.mall.tiny.security.JwtTokenService;
@@ -262,5 +263,12 @@ public class UmsAdminServiceImpl
 
         return adminRoleRelationMapper
                 .selectRoleListByAdminId(adminId);
+    }
+    @Override
+    public List<UmsResource> getResourceList(Long adminId) {
+        getDetail(adminId);
+
+        return adminRoleRelationMapper
+                .selectResourceListByAdminId(adminId);
     }
 }
