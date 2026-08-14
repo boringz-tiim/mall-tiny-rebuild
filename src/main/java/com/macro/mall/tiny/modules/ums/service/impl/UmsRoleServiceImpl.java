@@ -6,12 +6,8 @@ import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.macro.mall.tiny.common.exception.ApiException;
 import com.macro.mall.tiny.modules.ums.dto.UmsRoleCreateRequest;
 import com.macro.mall.tiny.modules.ums.dto.UmsRoleUpdateRequest;
-import com.macro.mall.tiny.modules.ums.mapper.UmsMenuMapper;
-import com.macro.mall.tiny.modules.ums.mapper.UmsRoleMapper;
-import com.macro.mall.tiny.modules.ums.mapper.UmsRoleMenuRelationMapper;
-import com.macro.mall.tiny.modules.ums.model.UmsMenu;
-import com.macro.mall.tiny.modules.ums.model.UmsRole;
-import com.macro.mall.tiny.modules.ums.model.UmsRoleMenuRelation;
+import com.macro.mall.tiny.modules.ums.mapper.*;
+import com.macro.mall.tiny.modules.ums.model.*;
 import com.macro.mall.tiny.modules.ums.service.UmsRoleService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Service;
@@ -28,14 +24,22 @@ import java.util.List;
 @Service
 public class UmsRoleServiceImpl extends ServiceImpl<UmsRoleMapper, UmsRole>
         implements UmsRoleService {
-    private final UmsRoleMenuRelationMapper roleMenuRelationMapper;
+    private final UmsRoleMenuRelationMapper roleMenuRelationMapper ;
     private final UmsMenuMapper menuMapper;
+    private final UmsRoleResourceRelationMapper
+            roleResourceRelationMapper;
+
+    private final UmsResourceMapper resourceMapper;
     public UmsRoleServiceImpl(
             UmsRoleMenuRelationMapper roleMenuRelationMapper,
-            UmsMenuMapper menuMapper
+            UmsMenuMapper menuMapper,
+            UmsRoleResourceRelationMapper roleResourceRelationMapper,
+            UmsResourceMapper resourceMapper
     ) {
         this.roleMenuRelationMapper = roleMenuRelationMapper;
         this.menuMapper = menuMapper;
+        this.roleResourceRelationMapper = roleResourceRelationMapper;
+        this.resourceMapper = resourceMapper;
     }
     @Override
     public Page<UmsRole> list(String keyword, long pageSize, long pageNum) {
@@ -53,6 +57,13 @@ public class UmsRoleServiceImpl extends ServiceImpl<UmsRoleMapper, UmsRole>
                 .orderByAsc(UmsRole::getId);
 
         return page(page, wrapper);
+    }
+    @Override
+    public List<UmsResource> getResourceList(Long roleId) {
+        getDetail(roleId);
+
+        return roleResourceRelationMapper
+                .selectResourceListByRoleId(roleId);
     }
 
     /**
@@ -217,5 +228,56 @@ public class UmsRoleServiceImpl extends ServiceImpl<UmsRoleMapper, UmsRole>
                 .selectMenuListByRoleId(roleId);
     }
 
+    @Override
+    @Transactional
+    public List<UmsResource> updateResources(
+            Long roleId,
+            List<Long> resourceIds
+    ) {
+        getDetail(roleId);
 
+        List<Long> distinctResourceIds =
+                resourceIds.stream()
+                        .distinct()
+                        .toList();
+
+        if (!distinctResourceIds.isEmpty()) {
+            List<UmsResource> existingResources =
+                    resourceMapper.selectByIds(
+                            distinctResourceIds
+                    );
+
+            if (existingResources.size()
+                    != distinctResourceIds.size()) {
+                throw new ApiException("部分接口资源不存在");
+            }
+        }
+
+        roleResourceRelationMapper.delete(
+                Wrappers
+                        .<UmsRoleResourceRelation>lambdaQuery()
+                        .eq(
+                                UmsRoleResourceRelation::getRoleId,
+                                roleId
+                        )
+        );
+
+        for (Long resourceId : distinctResourceIds) {
+            UmsRoleResourceRelation relation =
+                    new UmsRoleResourceRelation();
+
+            relation.setRoleId(roleId);
+            relation.setResourceId(resourceId);
+
+            int inserted =
+                    roleResourceRelationMapper.insert(relation);
+
+            if (inserted != 1) {
+                throw new ApiException("分配角色资源失败");
+            }
+        }
+
+        return roleResourceRelationMapper
+                .selectResourceListByRoleId(roleId);
+    }
 }

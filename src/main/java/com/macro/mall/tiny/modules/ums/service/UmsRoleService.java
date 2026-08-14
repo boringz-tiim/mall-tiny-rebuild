@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.spring.service.IService;
 import com.macro.mall.tiny.modules.ums.dto.UmsRoleCreateRequest;
 import com.macro.mall.tiny.modules.ums.dto.UmsRoleUpdateRequest;
 import com.macro.mall.tiny.modules.ums.model.UmsMenu;
+import com.macro.mall.tiny.modules.ums.model.UmsResource;
 import com.macro.mall.tiny.modules.ums.model.UmsRole;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
@@ -52,4 +53,23 @@ Page<UmsRole> list(String keyword,long pageSize,long pageNum);
      * @return 分配完成后的菜单列表
      */
     List<UmsMenu> updateMenus(Long roleId,List<Long>menuIds);
+    /**
+     * 查询指定角色拥有的接口资源。
+     *
+     * @param roleId 角色ID
+     * @return 角色拥有的接口资源列表
+     */
+    List<UmsResource> getResourceList(Long roleId);
+
+    /**
+     * 重新分配指定角色的接口资源。
+     *
+     * @param roleId 角色ID
+     * @param resourceIds 新的资源ID列表，空列表表示清空全部资源
+     * @return 分配完成后的接口资源列表
+     */
+    List<UmsResource> updateResources(
+            Long roleId,
+            List<Long> resourceIds
+    );
 }

@@ -3,11 +3,9 @@ package com.macro.mall.tiny.modules.ums.controller;
 import com.macro.mall.tiny.common.api.CommonPage;
 import com.macro.mall.tiny.common.api.CommonResult;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.macro.mall.tiny.modules.ums.dto.UmsRoleCreateRequest;
-import com.macro.mall.tiny.modules.ums.dto.UmsRoleMenuRequest;
-import com.macro.mall.tiny.modules.ums.dto.UmsRoleStatusRequest;
-import com.macro.mall.tiny.modules.ums.dto.UmsRoleUpdateRequest;
+import com.macro.mall.tiny.modules.ums.dto.*;
 import com.macro.mall.tiny.modules.ums.model.UmsMenu;
+import com.macro.mall.tiny.modules.ums.model.UmsResource;
 import com.macro.mall.tiny.modules.ums.model.UmsRole;
 import com.macro.mall.tiny.modules.ums.service.UmsRoleService;
 import jakarta.validation.Valid;
@@ -139,6 +137,50 @@ public class UmsRoleController {
         return CommonResult.success(
                 menus,
                 "角色菜单分配成功"
+        );
+    }
+    /**
+     * 查询指定角色拥有的接口资源。
+     *
+     * @param id 角色ID
+     * @return 角色拥有的接口资源列表
+     */
+    @GetMapping("/{id}/resources")
+    public CommonResult<List<UmsResource>> getResourceList(
+            @PathVariable
+            @Min(value = 1, message = "角色ID必须大于等于1")
+            Long id
+    ) {
+        return CommonResult.success(
+                roleService.getResourceList(id)
+        );
+    }
+
+    /**
+     * 重新分配指定角色的接口资源。
+     *
+     * @param id 角色ID
+     * @param request 新的资源ID列表
+     * @return 分配后的接口资源列表
+     */
+    @PutMapping("/{id}/resources")
+    public CommonResult<List<UmsResource>> updateResources(
+            @PathVariable
+            @Min(value = 1, message = "角色ID必须大于等于1")
+            Long id,
+
+            @Valid @RequestBody
+            UmsRoleResourceRequest request
+    ) {
+        List<UmsResource> resources =
+                roleService.updateResources(
+                        id,
+                        request.resourceIds()
+                );
+
+        return CommonResult.success(
+                resources,
+                "角色资源分配成功"
         );
     }
 }
