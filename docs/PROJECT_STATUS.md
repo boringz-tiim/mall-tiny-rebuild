@@ -1,6 +1,6 @@
 # mall-tiny-rebuild 项目状态
 
-最后更新：2026-08-13
+最后更新：2026-08-14
 
 ## 项目目标
 
@@ -100,8 +100,9 @@
 关系实体、查询用户角色和重新分配用户角色也已经完成。
 当前已进入菜单模块，菜单基础分层、按父级查询、CRUD 和菜单树已经完成。
 角色菜单关系、查询角色菜单和重新分配角色菜单也已经完成。
-当前已进入接口资源模块，`UmsResourceCategory` CRUD 已经完成，删除分类时会
-检查关联资源并禁止删除非空分类。下一步实现 `UmsResource` CRUD 和分页。
+当前已进入接口资源模块，`UmsResourceCategory` CRUD 以及 `UmsResource` CRUD
+和分页已经完成；删除分类时会检查关联资源，删除资源时会事务清理角色资源
+关系。下一步实现 `UmsRoleResourceRelation` 和角色资源分配。
 
 推荐顺序：
 
@@ -148,7 +149,7 @@
 ### 4. 接口资源模块
 
 - [x] `UmsResourceCategory` CRUD（删除非空分类时进行关联资源检查）
-- [ ] `UmsResource` CRUD 和分页
+- [x] `UmsResource` CRUD 和分页（支持分类、名称和 URL 条件筛选）
 - [ ] `UmsRoleResourceRelation`
 - [ ] 给角色分配接口资源
 - [ ] 根据用户查询接口权限
@@ -496,6 +497,43 @@ DELETE http://localhost:8080/resource-category/{id}
 Authorization: Bearer <token>
 ```
 
+接口资源分页：
+
+```text
+GET http://localhost:8080/resource/list?categoryId=1&nameKeyword=用户&urlKeyword=/admin&pageNum=1&pageSize=5
+Authorization: Bearer <token>
+```
+
+接口资源详情：
+
+```text
+GET http://localhost:8080/resource/{id}
+Authorization: Bearer <token>
+```
+
+新增接口资源：
+
+```text
+POST http://localhost:8080/resource
+Authorization: Bearer <token>
+Content-Type: application/json
+```
+
+修改接口资源：
+
+```text
+PUT http://localhost:8080/resource/{id}
+Authorization: Bearer <token>
+Content-Type: application/json
+```
+
+删除接口资源：
+
+```text
+DELETE http://localhost:8080/resource/{id}
+Authorization: Bearer <token>
+```
+
 参数校验：
 
 ```text
@@ -504,8 +542,8 @@ GET http://localhost:8080/admin/list?pageNum=0&pageSize=5
 
 ## 新对话交接提示
 
-当前对话已完成用户、角色、菜单、资源分类及用户角色、角色菜单关系功能。
-开启新对话继续开发时，应从接口资源模块的 `UmsResource` CRUD 和分页开始。工作区中
+当前对话已完成用户、角色、菜单、资源分类、接口资源及用户角色、角色菜单关系功能。
+开启新对话继续开发时，应从 `UmsRoleResourceRelation` 和角色资源分配开始。工作区中
 `UmsMenuService.java` 可能仅有未提交的文件末尾空行变化，处理前先检查差异，
 不要把它误认为未完成的业务代码。
 
@@ -528,7 +566,7 @@ D:\mall-tiny-rebuild\mall-tiny-rebuild
 按照 AGENTS.md 的协作方式，每一步解释目的、原理、代码职责和验证方法。
 
 本次从 docs/PROJECT_STATUS.md 的“当前阶段”继续，下一步实现
-UmsResource CRUD 和分页。项目业务代码由我亲手编写，请按步骤指导，
+UmsRoleResourceRelation 和角色资源分配。项目业务代码由我亲手编写，请按步骤指导，
 不要直接修改业务代码；项目状态文档、Git 提交和远程推送由你负责。
 ```
 
